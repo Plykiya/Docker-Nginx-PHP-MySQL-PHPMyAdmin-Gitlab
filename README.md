@@ -5,16 +5,19 @@ Docker running PHP-FPM, MySQL, using Nginx as a reverse proxy for Gitlab and PHP
 The goal of set up will be to get nginx up and gitlab running on a reverse proxy through nginx. You can alter the ports that are published by each service but in general I found it easier to route all traffic through nginx as a reverse proxy and using docker's network feature to avoid having to deal with changing any ports at all. You don't have to self-host gitlab, in fact **you probably shouldn't**, but I'm doing it for fun. Make sure your system meets [Gitlab's minimum requirements](https://docs.gitlab.com/ee/install/requirements.html) or else Gitlab installation will fail. 
 
 ### Installing Docker and Docker Compose
-Find your OS, download docker and docker compose for it
-[Docker](https://docs.docker.com/install/)
-[Docker Compose](https://docs.docker.com/compose/install/)
+Find your OS, download [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) for it
 
 ### Docker Images to pull
 [nginx](https://hub.docker.com/_/nginx/)
+
 [mysql](https://hub.docker.com/_/mysql/)
+
 [phpmyadmin/phpmyadmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/)
+
 [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce/)
+
 [php](https://hub.docker.com/_/php)
+
 
 ### My Set up
 I'm doing this all on a fresh Ubuntu 18.04 install. It comes by default with curl, git, etc.
