@@ -43,9 +43,10 @@ Final Project Tree
 **If you aren't installing Gitlab, feel free to omit it and skip to part 7**
 1. Install Docker, Docker Compose, and pull the images above. I used all the default images at the time. The only directory I've created is /home/plykiya/website and /home/plykiya/website/www. Used ``sudo chown plykiya:plykiya /home/plykiya/website`` to get rid of permission errors. The Nginx, Gitlab, PHPMyAdmin, and MySQL folders are made automatically through docker volumes copying the contents of the container onto your host machine. Any changes to the files on your host machine will be reflected in the container upon starting the container.
 
-2. Run Nginx, settings to create persistent volume storage, and this will be the only container we expose to port 80:80 because we want it to process http requests to the server IP. We're only starting this Nginx container so that we can begin editing the config and setting up Gitlab. 
+2. Run Nginx, settings to create persistent volume storage, and this will be the only container we expose to port 80:80 because we want it to process http requests to the server IP. We're only starting this Nginx container so that we can begin editing the config and setting up Gitlab. Add an index.html file to the host directory to test if Nginx works.
 ```
 docker run -v /home/plykiya/website:/usr/share/nginx/html:ro -v /home/plykiya/website/nginx:/etc/nginx:ro -d -p 80:80 nginx
+nano index.html
 ```
 Check your conf.d directory to ensure that you have a default.conf file. If you don't, you can copy one from the currently running container. If you have the default.conf file, stop and remove your Nginx container as we won't be using this instance anymore.
 ```
