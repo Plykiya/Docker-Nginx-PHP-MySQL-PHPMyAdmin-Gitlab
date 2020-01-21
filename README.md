@@ -45,7 +45,8 @@ Final Project Tree
 
 2. Run Nginx, settings to create persistent volume storage, and this will be the only container we expose to port 80:80 because we want it to process http requests to the server IP. We're only starting this Nginx container so that we can begin editing the config and setting up Gitlab. Add an index.html file to the host directory to test if Nginx works.
 ```
-docker run -v /home/plykiya/website:/usr/share/nginx/html:ro -v /home/plykiya/website/nginx:/etc/nginx:ro -d -p 80:80 nginx
+docker run -v /home/plykiya/website/www:/usr/share/nginx/html:ro -v /home/plykiya/website/nginx:/etc/nginx:ro -d -p 80:80 nginx
+cd /home/plykiya/website/www
 nano index.html
 ```
 Check your conf.d directory to ensure that you have a default.conf file. If you don't, you can copy one from the currently running container. If you have the default.conf file, stop and remove your Nginx container as we won't be using this instance anymore.
@@ -127,7 +128,7 @@ services:
         restart: always
         volumes:
             - '/home/plykiya/website/www:/usr/share/nginx/html:ro'
-            - '/home/plykiya/website/nginx/conf.d:/etc/nginx/conf.d/'
+            - '/home/plykiya/website/nginx/:/etc/nginx/'
         ports:
             - '80:80'
     db:
