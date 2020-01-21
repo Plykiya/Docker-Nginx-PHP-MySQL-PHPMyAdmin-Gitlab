@@ -8,16 +8,11 @@ The goal of set up will be to get nginx up and gitlab running on a reverse proxy
 Find your OS, download [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) for it
 
 ### Docker Images to pull
-[nginx](https://hub.docker.com/_/nginx/)
-
-[mysql](https://hub.docker.com/_/mysql/)
-
-[phpmyadmin/phpmyadmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/)
-
-[gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce/)
-
-[php](https://hub.docker.com/_/php)
-
+- [nginx](https://hub.docker.com/_/nginx/)
+- [mysql](https://hub.docker.com/_/mysql/)
+- [phpmyadmin/phpmyadmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/)
+- [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce/)
+- [php](https://hub.docker.com/_/php)
 
 ### My Set up
 I'm doing this all on a fresh Ubuntu 18.04 install. It comes by default with curl, git, etc.
