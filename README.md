@@ -41,7 +41,7 @@ Final Project Tree
 ```
 ### Installation Steps
 
-1. Install docker, docker compose, and pull the images above. I used all the defaults at the time, which generally means it uses the :latest tag. The only directory I've created is /home/plykiya/website and /home/plykiya/website/www. ``sudo chown plykiya:plykiya /home/plykiya/website`` to get rid of permission errors. All nginx, gitlab, phpymyadmin, mysql are made automatically through docker volumes copying the contents of the container onto your host machine. Any changes to the files on your host machine will be reflected in the container upon starting the container.
+1. Install docker, docker compose, and pull the images above. I used all the default images at the time. The only directory I've created is /home/plykiya/website and /home/plykiya/website/www. Used ``sudo chown plykiya:plykiya /home/plykiya/website`` to get rid of permission errors. All nginx, gitlab, phpymyadmin, mysql are made automatically through docker volumes copying the contents of the container onto your host machine. Any changes to the files on your host machine will be reflected in the container upon starting the container.
 
 2. Run nginx, settings to create persistent volume storage, and this will be the only container we expose to port 80:80 because we want it to process http requests to the server IP. We're only starting this nginx container so that we can begin editing the config and setting up gitlab. 
 ```
