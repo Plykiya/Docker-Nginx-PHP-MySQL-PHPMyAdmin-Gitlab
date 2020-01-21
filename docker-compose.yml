@@ -1,0 +1,57 @@
+version: '3.7'
+networks:
+    trap-network:
+        driver: bridge
+services:
+    php:
+        image: php
+        container_name: trap-php
+        working_dir: /home/plykiya/website/www
+        networks:
+            - trap-network
+        environment:
+            TIMEZONE: EST
+    nginx:
+        image: nginx
+        container_name: trap-nginx
+        networks:
+            - trap-network
+        depends_on:
+            - php
+            - gitlab
+            - phpmyadmin
+        restart: always
+        volumes:
+            - '/home/plykiya/website/www:/usr/share/nginx/html:ro'
+            - '/home/plykiya/website/nginx/conf.d:/etc/nginx/conf.d/'
+        ports:
+            - '80:80'
+    db:
+        image: mysql
+        container_name: trap-mysql
+        networks:
+            - trap-network
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_ROOT_PASSWORD: somesupersecretpasswordyoumade
+        restart: always
+        volumes:
+            - '/home/plykiya/website/MySQL:/var/lib/mysql'
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: trap-phpmyadmin
+        networks:
+            - trap-network
+        depends_on:
+            - db
+        restart: always
+    gitlab:
+        image: gitlab/gitlab-ce
+        container_name: trap-gitlab
+        networks:
+            - trap-network
+        volumes:
+            - '/home/plykiya/website/gitlab/config:/etc/gitlab'
+            - '/home/plykiya/website/gitlab/logs:/var/log/gitlab'
+            - '/home/plykiya/website/gitlab/data:/var/opt/gitlab'
+        restart: always
