@@ -128,7 +128,7 @@ services:
         restart: always
         volumes:
             - '/home/plykiya/website/www:/usr/share/nginx/html:ro'
-            - '/home/plykiya/website/nginx/:/etc/nginx/'
+            - '/home/plykiya/website/nginx:/etc/nginx:ro'
         ports:
             - '80:80'
     db:
