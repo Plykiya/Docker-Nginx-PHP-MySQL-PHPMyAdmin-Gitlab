@@ -37,7 +37,7 @@ Final Project Tree
   ├── mysql
   │   └── blablabla persistent mysql storage
   └── www
-      └── index.php
+      └── index.html
 ```
 ### Installation Steps
 
