@@ -32,8 +32,6 @@ Final Project Tree
   │       └── phpmyadmin.trap.fashion.conf
   ├── gitlab
   │   └── blablabla persistent gitlab storage, will retain logins and branches and stuff
-  ├── phpmyadmin
-  │   └── blablabla persistent phpmyadmin storage
   ├── mysql
   │   └── blablabla persistent mysql storage
   └── www
