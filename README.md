@@ -85,7 +85,7 @@ docker network create trap-network
 5. Start up Gitlab with settings to create persistent storage and accessible at the domain name we give it in the nginx reverse proxy config and the config here. Before you start up the Nginx container, we can confirm the IP address of the Gitlab container by running ``docker inspect containername``. If the IP is different than what we've written down in the Nginx reverse proxy config, feel free to change it before starting Nginx. Once you've confirmed it's correct, start up Nginx as well. 
 ```
 docker run -d --hostname gitlab.trap.fashion --network trap-network --restart unless-stopped --volume /home/plykiya/website/gitlab/config:/etc/gitlab --volume /home/plykiya/website/gitlab/logs:/var/log/gitlab --volume /home/plykiya/website/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce
-docker run --network trap-network -v /home/plykiya/website/www:/usr/share/nginx/html:ro -v /home/plykiya/website/nginx/:/etc/nginx/ -d -p 80:80 nginx
+docker run --network trap-network -v /home/plykiya/website/www:/usr/share/nginx/html:ro -v /home/plykiya/website/nginx:/etc/nginx -d -p 80:80 nginx
 ```
 Gitlab should now be accessible at the domain name you've given it. It may take a few minutes for Gitlab to start up. 
 
@@ -141,7 +141,7 @@ services:
             MYSQL_ROOT_PASSWORD: somesupersecretpasswordyoumade
         restart: always
         volumes:
-            - '/home/plykiya/website/MySQL:/var/lib/mysql'
+            - '/home/plykiya/website/mysql:/var/lib/mysql'
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         container_name: trap-phpmyadmin
