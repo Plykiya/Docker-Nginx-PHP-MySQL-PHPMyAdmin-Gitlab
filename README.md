@@ -2,7 +2,7 @@
 Docker running PHP-FPM, MySQL, using Nginx as a reverse proxy for Gitlab and PHPMyAdmin
 
 ### Description
-The goal of set up will be to get nginx up and gitlab running on a reverse proxy through nginx. You can alter the ports that are published by each service but in general I found it easier to route all traffic through nginx as a reverse proxy and using docker's network feature to avoid having to deal with changing any ports at all. You don't have to self-host gitlab, in fact **you probably shouldn't**, but I'm doing it for fun. Make sure your system meets [Gitlab's minimum requirements](https://docs.gitlab.com/ee/install/requirements.html) or else Gitlab installation will fail. 
+The goal of set up will be to get nginx up and gitlab running on a reverse proxy through nginx. You can alter the ports that are published by each service but in general I found it easier to route all traffic through nginx as a reverse proxy and using docker's network feature to avoid having to deal with changing any ports at all. You don't have to self-host gitlab, in fact **you probably shouldn't**, but I'm doing it for fun. Make sure your system meets [Gitlab's minimum requirements](https://docs.gitlab.com/ee/install/requirements.html) or else Gitlab installation will fail.
 
 ### Installing Docker and Docker Compose
 Find your OS, download [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) for it
@@ -40,7 +40,7 @@ Final Project Tree
       └── index.html
 ```
 ### Installation Steps
-
+**If you aren't installing Gitlab, feel free to omit it and skip to the composer step part 7**
 1. Install docker, docker compose, and pull the images above. I used all the default images at the time. The only directory I've created is /home/plykiya/website and /home/plykiya/website/www. Used ``sudo chown plykiya:plykiya /home/plykiya/website`` to get rid of permission errors. All nginx, gitlab, phpymyadmin, mysql are made automatically through docker volumes copying the contents of the container onto your host machine. Any changes to the files on your host machine will be reflected in the container upon starting the container.
 
 2. Run nginx, settings to create persistent volume storage, and this will be the only container we expose to port 80:80 because we want it to process http requests to the server IP. We're only starting this nginx container so that we can begin editing the config and setting up gitlab. 
