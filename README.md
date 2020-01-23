@@ -41,7 +41,7 @@ Final Project Tree
 Setting up Gitlab
 1. Run Nginx through Docker, copy the nginx folder from the container onto your host machine so that we can make changes to the Nginx config. Stop and remove the Nginx container.
 ```
-docker run -p 80:80 nginx
+docker run -p 80:80 -d nginx
 docker ps
 docker cp containername:/etc/nginx /home/plykiya/website
 ```
