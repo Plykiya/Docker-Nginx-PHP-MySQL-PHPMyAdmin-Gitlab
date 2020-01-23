@@ -4,13 +4,14 @@ networks:
         driver: bridge
 services:
     php:
-        image: php
+        image: php:7.4-fpm
         container_name: trap-php
-        working_dir: /home/plykiya/website/www
         networks:
             - trap-network
         environment:
             TIMEZONE: EST
+        volumes:
+            - '/home/plykiya/website/www:/usr/share/nginx/html'
     nginx:
         image: nginx
         container_name: trap-nginx
@@ -21,6 +22,8 @@ services:
             - gitlab
             - phpmyadmin
         restart: always
+        environment:
+            PHP_FPM_SERVER: php:9000
         volumes:
             - '/home/plykiya/website/www:/usr/share/nginx/html:ro'
             - '/home/plykiya/website/nginx/conf.d:/etc/nginx/conf.d/'
@@ -33,10 +36,10 @@ services:
             - trap-network
         command: --default-authentication-plugin=mysql_native_password
         environment:
-            MYSQL_ROOT_PASSWORD: somesupersecretpasswordyoumade
+            MYSQL_ROOT_PASSWORD: superdupersecretpassword!
         restart: always
         volumes:
-            - '/home/plykiya/website/MySQL:/var/lib/mysql'
+            - '/home/plykiya/website/mysql:/var/lib/mysql'
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         container_name: trap-phpmyadmin
