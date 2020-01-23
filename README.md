@@ -46,7 +46,8 @@ docker ps
 docker cp containername:/etc/nginx /home/plykiya/website
 ```
 2. Set up a Docker network and launch Gitlab. We'll use persistent volume storage, retaining any logins and data through launches.
-```docker network create trap-network
+```
+docker network create trap-network
 docker run -d --hostname gitlab.trap.fashion --network trap-network --restart unless-stopped --volume /home/plykiya/website/gitlab/config:/etc/gitlab --volume /home/plykiya/website/gitlab/logs:/var/log/gitlab --volume /home/plykiya/website/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce
 ```
 
