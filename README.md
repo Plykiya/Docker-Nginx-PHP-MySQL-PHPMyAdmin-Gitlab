@@ -157,8 +157,7 @@ proxy_pass http://phpmyadmin/;
 proxy_buffering off;
 proxy_set_header X-Real-IP $remote_addr;
 }
-};
-
+}
 ```
 Edit the index line to look for index.php, and paste the php block.
 ```
