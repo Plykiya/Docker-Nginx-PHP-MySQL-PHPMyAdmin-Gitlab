@@ -20,6 +20,10 @@ I'm doing this on a fresh install of Ubuntu 18.04, have already pre-configured m
 Final Project Tree
 ```
 .
+├── gitlab
+│   └── blablabla persistent gitlab storage, will retain logins and branches and stuff
+├── mysql
+│   └── blablabla persistent mysql storage
 └── Website
   ├── docker-compose.yml
   ├── nginx
@@ -29,13 +33,10 @@ Final Project Tree
   │       └── default.conf
   │       └── gitlab.trap.fashion.conf
   │       └── phpmyadmin.trap.fashion.conf
-  ├── gitlab
-  │   └── blablabla persistent gitlab storage, will retain logins and branches and stuff
-  ├── mysql
-  │   └── blablabla persistent mysql storage
   └── www
       ├── index.php
       └── hello.html
+
 ```
 ### Installation Steps (Assuming you've already pulled the images and installed Docker + Docker Compose)
 Setting up Gitlab
@@ -48,7 +49,7 @@ docker cp containername:/etc/nginx /home/plykiya/website
 2. Set up a Docker network and launch Gitlab. We'll use persistent volume storage, retaining any logins and data through launches.
 ```
 docker network create trap-network
-docker run -d --hostname gitlab.trap.fashion --network trap-network --restart unless-stopped --volume /home/plykiya/website/gitlab/config:/etc/gitlab --volume /home/plykiya/website/gitlab/logs:/var/log/gitlab --volume /home/plykiya/website/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce
+docker run -d --hostname gitlab.trap.fashion --network trap-network --restart unless-stopped --volume /home/plykiya/gitlab/config:/etc/gitlab --volume /home/plykiya/gitlab/logs:/var/log/gitlab --volume /home/plykiya/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce
 ```
 
 3. In the Nginx conf.d folder, we add in our reverse proxy config for Gitlab and then start Nginx. The IP will be the IP of the Gitlab docker container on the local network. Use docker inspect containername if you need to find out.
@@ -59,18 +60,18 @@ sudo vi gitlab.trap.fashion.conf
 The config file. The client max body size is necessary when initially setting up your Gitlab repo.
 ```
 server {
-listen 80;
-listen [::]:80;
+  listen 80;
+  listen [::]:80;
 
-server_name gitlab.trap.fashion;
+  server_name gitlab.trap.fashion;
 
-location / {
-proxy_pass http://172.18.0.2/;
-proxy_set_header Host $host;
-proxy_buffering off;
-proxy_set_header X-Real-IP $remote_addr;
-client_max_body_size 100m;
-}
+  location / {
+    proxy_pass http://172.18.0.2/;
+    proxy_set_header Host $host;
+    proxy_buffering off;
+    proxy_set_header X-Real-IP $remote_addr;
+    client_max_body_size 100m;
+  }
 }
 ```
 
@@ -120,10 +121,10 @@ services:
             - trap-network
         command: --default-authentication-plugin=mysql_native_password
         environment:
-            MYSQL_ROOT_PASSWORD: superdupersecretpassword!
+            MYSQL_ROOT_PASSWORD: supersupersuperdupersecretpassword
         restart: always
         volumes:
-            - '/home/plykiya/website/mysql:/var/lib/mysql'
+            - '/home/plykiya/mysql:/var/lib/mysql'
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         container_name: trap-phpmyadmin
@@ -138,9 +139,9 @@ services:
         networks:
             - trap-network
         volumes:
-            - '/home/plykiya/website/gitlab/config:/etc/gitlab'
-            - '/home/plykiya/website/gitlab/logs:/var/log/gitlab'
-            - '/home/plykiya/website/gitlab/data:/var/opt/gitlab'
+            - '/home/plykiya/gitlab/config:/etc/gitlab'
+            - '/home/plykiya/gitlab/logs:/var/log/gitlab'
+            - '/home/plykiya/gitlab/data:/var/opt/gitlab'
         restart: always
 ```
 
@@ -148,16 +149,16 @@ services:
 PHPMyAdmin config (Just change the proxy pass name on the Gitlab one to gitlab)
 ```
 server {
-listen 80;
-listen [::]:80;
+  listen 80;
+  listen [::]:80;
 
-server_name phpmyadmin.trap.fashion;
+  server_name phpmyadmin.trap.fashion;
 
-location / {
-proxy_pass http://phpmyadmin/;
-proxy_buffering off;
-proxy_set_header X-Real-IP $remote_addr;
-}
+  location / {
+    proxy_pass http://phpmyadmin/;
+    proxy_buffering off;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
 }
 ```
 Edit the index line to look for index.php, and paste the php block.
@@ -169,7 +170,7 @@ location ~ ^/.+\.php(/|$) {
         fastcgi_pass php:9000;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     }
 ```
 3. Stop and remove Nginx/Gitlab containers running if they are. Navigate to the directory with docker-compose.yml and run Docker Compose. 
