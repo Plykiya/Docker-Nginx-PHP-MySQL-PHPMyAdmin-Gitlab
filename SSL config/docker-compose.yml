@@ -1,0 +1,64 @@
+version: '3.7'
+networks:
+    trap-network:
+        driver: bridge
+services:
+    php:
+        image: php:7.4-fpm
+        container_name: trap-php
+        networks:
+            - trap-network
+        environment:
+            TIMEZONE: EST
+        volumes:
+            - '/home/plykiya/website/www:/usr/share/nginx/html'
+    nginx:
+        image: nginx
+        container_name: trap-nginx
+        networks:
+            - trap-network
+        depends_on:
+            - php
+            - gitlab
+            - phpmyadmin
+        restart: always
+        environment:
+            PHP_FPM_SERVER: php:9000
+        volumes:
+            - '/home/plykiya/website/www:/usr/share/nginx/html:ro'
+            - '/home/plykiya/website/nginx/conf.d:/etc/nginx/conf.d/'
+            - '/home/plykiya/letsencrypt/dhparam/dhparam.pem:/etc/ssl/certs/dhparam-2048.pem'
+            - '/home/plykiya/letsencrypt/live/trap.fashion/fullchain.pem:/etc/letsencrypt/live/trap.fashion/fullchain.pem'
+            - '/home/plykiya/letsencrypt/live/trap.fashion/privkey.pem:/etc/letsencrypt/live/trap.fashion/privkey.pem'
+        ports:
+            - '80:80'
+            - '443:443'
+    db:
+        image: mysql
+        container_name: trap-mysql
+        networks:
+            - trap-network
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_ROOT_PASSWORD: supersupersuperdupersecretpassword
+        restart: always
+        volumes:
+            - '/home/plykiya/mysql:/var/lib/mysql'
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: trap-phpmyadmin
+        networks:
+            - trap-network
+        depends_on:
+            - db
+        restart: always
+    gitlab:
+        image: gitlab/gitlab-ce
+        container_name: trap-gitlab
+        networks:
+            - trap-network
+        volumes:
+            - '/home/plykiya/gitlab/config:/etc/gitlab'
+            - '/home/plykiya/gitlab/logs:/var/log/gitlab'
+            - '/home/plykiya/gitlab/data:/var/opt/gitlab'
+        restart: always
