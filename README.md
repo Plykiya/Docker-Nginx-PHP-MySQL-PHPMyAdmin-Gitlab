@@ -219,4 +219,4 @@ sudo docker run -it --rm -v /home/plykiya/letsencrypt:/etc/letsencrypt -v /home/
 sudo openssl dhparam -out /home/plykiya/letsencrypt/dhparam/dhparam.pem 2048
 ```
 
-5. Add Nginx redirects from HTTP to HTTPS per domain and update Nginx in docker-compose.yml to have the volumes of your new certs and dhparam.pem.
+5. Add Nginx redirects from HTTP to HTTPS per domain and update Nginx in docker-compose.yml to have the volumes of your new certs and dhparam.pem. Check my SSL config folder if you want to see the updates and changes made.
