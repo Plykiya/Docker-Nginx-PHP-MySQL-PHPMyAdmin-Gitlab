@@ -214,4 +214,9 @@ sudo docker run -it --rm -v /home/plykiya/letsencrypt:/etc/letsencrypt -v /home/
 ```
 sudo docker run -it --rm -v /home/plykiya/letsencrypt:/etc/letsencrypt -v /home/plykiya/letsencrypt/lib:/var/lib/letsencrypt -v /home/plykiya/website/www:/data/letsencrypt certbot/certbot certonly --webroot --email someemail@account.com --agree-tos --no-eff-email --webroot-path=/data/letsencrypt -d trap.fashion -d gitlab.trap.fashion -d phpmyadmin.trap.fashion
 ```
-4. Add Nginx redirects from http to https, feel free to check my SSL config folder for how I implemented mine for all three of my domains.
+4. Generate a Diffie-Hellman paramater.
+```
+sudo openssl dhparam -out /home/plykiya/letsencrypt/dhparam/dhparam.pem 2048
+```
+
+5. Add Nginx redirects from HTTP to HTTPS per domain and update Nginx in docker-compose.yml to have the volumes of your new certs and dhparam.pem.
