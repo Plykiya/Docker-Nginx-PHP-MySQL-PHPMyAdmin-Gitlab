@@ -1,5 +1,5 @@
 # Docker-Nginx-PHP-MySQL-PHPMyAdmin-Gitlab
-Docker running PHP-FPM, MySQL, using Nginx as a reverse proxy for Gitlab and PHPMyAdmin
+Docker running PHP-FPM, MySQL, using Nginx as a reverse proxy for Gitlab and PHPMyAdmin. SSL certs through Certbot
 
 ### Description
 We'll be making use of Docker's network feature and using Nginx as a reverse proxy for Gitlab, PHPMyAdmin, and PHP-FPM. You don't have to self-host Gitlab, I'm doing it for fun. If you are, make sure your system meets [Gitlab's minimum requirements](https://docs.gitlab.com/ee/install/requirements.html) or else Gitlab installation will fail.
@@ -13,6 +13,7 @@ Find your OS, download [Docker](https://docs.docker.com/install/) and [Docker Co
 - [phpmyadmin/phpmyadmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/)
 - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce/)
 - [php:7.4-fpm](https://hub.docker.com/_/php)
+- [certbot/certbot](https://hub.docker.com/r/certbot/certbot/) (Optional)
 
 ### My Set up
 I'm doing this on a fresh install of Ubuntu 18.04, have already pre-configured my domain's DNS records.
@@ -20,6 +21,9 @@ I'm doing this on a fresh install of Ubuntu 18.04, have already pre-configured m
 Final Project Tree
 ```
 .
+├── letsencrypt
+│   └── live
+│       └── trap.fashion (cert folder)
 ├── gitlab
 │   └── blablabla persistent gitlab storage, will retain logins and branches and stuff
 ├── mysql
@@ -183,3 +187,31 @@ sudo docker exec trap-gitlab update-permissions
 sudo docker restart trap-gitlab
 sudo docker restart trap-nginx
 ```
+
+### Bonus Round: HTTPS/SSL through LetsEncrypt/Certbot
+1. Prepare your Nginx default config to handle the letsencrypt domain ownership check. If you have multiple domains, paste the acme challenge block into those as well. Make sure to indicate root as well.
+```
+server {
+    listen       80;
+    server_name  localhost;
+    root   /usr/share/nginx/html;
+    
+    location / {
+    index index.php index.html;
+    }
+    
+    location ~ /.well-known/acme-challenge {
+        allow all;
+        try_files $uri $uri/ /index.php;
+    }
+}
+```
+2. We're going to launch certbot in interactive mode, and indicate three folders. Where we want to save the certs, where we want letsencrypt's lib, where our HTML to certify our certificate is. We're going to be using staging (test) certificates to ensure it all works.
+```
+sudo docker run -it --rm -v /home/plykiya/letsencrypt:/etc/letsencrypt -v /home/plykiya/letsencrypt/lib:/var/lib/letsencrypt -v /home/plykiya/website/www:/data/letsencrypt certbot/certbot certonly --webroot --register-unsafely-without-email --agree-tos --webroot-path=/data/letsencrypt --staging -d trap.fashion -d gitlab.trap.fashion -d phpmyadmin.trap.fashion
+```
+3. Once you ensure it works, nuke your local letsencrypt folder and run the real certificate command. If your test certs were successful, this should return a congratulations message again.
+```
+sudo docker run -it --rm -v /home/plykiya/letsencrypt:/etc/letsencrypt -v /home/plykiya/letsencrypt/lib:/var/lib/letsencrypt -v /home/plykiya/website/www:/data/letsencrypt certbot/certbot certonly --webroot --email someemail@account.com --agree-tos --no-eff-email --webroot-path=/data/letsencrypt -d trap.fashion -d gitlab.trap.fashion -d phpmyadmin.trap.fashion
+```
+4. Add Nginx redirects from http to https, feel free to check my SSL config folder for how I implemented mine for all three of my domains.
